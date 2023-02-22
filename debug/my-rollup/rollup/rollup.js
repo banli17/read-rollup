@@ -1,6 +1,7 @@
+import { normalizeInputOptions } from '../utils/options/normalizeInputOptions';
 import Graph from '../Graph';
 
-export default function rollup(rawInputOptions) {
+export function rollup(rawInputOptions) {
 	return rollupInternal(rawInputOptions, null);
 }
 
@@ -22,14 +23,10 @@ async function rollupInternal(rawInputOptions, watcher) {
 	return result;
 }
 
+// 获取输入选项
 async function getInputOptions(rawInputOptions) {
 	const { options } = await normalizeInputOptions(rawInputOptions);
 	return {
 		options
 	};
-}
-
-async function normalizeInputOptions(inputOptions) {
-	const options
-	return options
 }

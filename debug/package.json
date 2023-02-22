@@ -1,0 +1,7 @@
+{
+	"name": "my-debug",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "unbuild --stub"
+	}
+}

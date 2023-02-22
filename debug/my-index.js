@@ -1,10 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const json = require('@rollup/plugin-json');
-const rollup = require('../dist/rollup');
+const { rollup } = require('./dist/rollup.cjs');
 
 const inputOption = {
-	input: './debug/main.js',
+	input: path.resolve(__dirname, './main.js'),
 	plugins: [json({})]
 };
 const outputOption = {
@@ -12,9 +12,7 @@ const outputOption = {
 };
 
 (async function () {
-	const bundle = await rollup.rollup(inputOption);
+	const bundle = await rollup(inputOption);
 
-	console.log(bundle);
-	
 	bundle.write(outputOption);
 })();

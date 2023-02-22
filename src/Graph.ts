@@ -30,6 +30,7 @@ import type { PureFunctions } from './utils/pureFunctions';
 import { timeEnd, timeStart } from './utils/timers';
 import { markModuleAndImpureDependenciesAsExecuted } from './utils/traverseStaticDependencies';
 
+// 标准化入口模块
 function normalizeEntryModules(
 	entryModules: readonly string[] | Record<string, string>
 ): UnresolvedModule[] {
@@ -44,7 +45,7 @@ function normalizeEntryModules(
 	}
 	return Object.entries(entryModules).map(([name, id]) => ({
 		fileName: null,
-		id,
+		id, // 路径
 		implicitlyLoadedAfter: [],
 		importer: undefined,
 		name
@@ -95,16 +96,21 @@ export default class Graph {
 			watcher.onCurrentRun('change', handleChange);
 			watcher.onCurrentRun('close', handleClose);
 		}
+		// 插件驱动器
 		this.pluginDriver = new PluginDriver(this, options, options.plugins, this.pluginCache);
+		// js 解析器
 		this.acornParser = acorn.Parser.extend(...(options.acornInjectPlugins as any[]));
+		// 模块解析器
 		this.moduleLoader = new ModuleLoader(this, this.modulesById, this.options, this.pluginDriver);
+		// 文件操作队列
 		this.fileOperationQueue = new Queue(options.maxParallelFileOps);
+		// 纯函数
 		this.pureFunctions = getPureFunctions(options);
 	}
 
 	async build(): Promise<void> {
 		timeStart('generate module graph', 2);
-		await this.generateModuleGraph();
+		await this.generateModuleGraph(); // 生成模块图
 		timeEnd('generate module graph', 2);
 
 		timeStart('sort and bind modules', 2);
@@ -172,8 +178,10 @@ export default class Graph {
 	};
 
 	private async generateModuleGraph(): Promise<void> {
+		// 添加入口模块
 		({ entryModules: this.entryModules, implicitEntryModules: this.implicitEntryModules } =
 			await this.moduleLoader.addEntryModules(normalizeEntryModules(this.options.input), true));
+
 		if (this.entryModules.length === 0) {
 			throw new Error('You must supply options.input to rollup');
 		}

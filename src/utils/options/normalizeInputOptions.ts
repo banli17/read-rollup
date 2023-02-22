@@ -40,7 +40,7 @@ export async function normalizeInputOptions(config: InputOptions): Promise<{
 	unsetOptions: Set<string>;
 }> {
 	// These are options that may trigger special warnings or behaviour later
-	// if the user did not select an explicit value
+	// if the user did not select an explicit明确的 value
 	const unsetOptions = new Set<string>();
 
 	const context = config.context ?? 'undefined';

@@ -636,12 +636,14 @@ export class ModuleLoader {
 		return resolvedId;
 	}
 
+	// 加载入口模块
 	private async loadEntryModule(
 		unresolvedId: string,
 		isEntry: boolean,
 		importer: string | undefined,
 		implicitlyLoadedBefore: string | null
 	): Promise<Module> {
+		// 解析 id 为 resolveIdResult , 是绝对路径
 		const resolveIdResult = await resolveId(
 			unresolvedId,
 			importer,
@@ -653,13 +655,16 @@ export class ModuleLoader {
 			true,
 			EMPTY_OBJECT
 		);
+		// 解析错误
 		if (resolveIdResult == null) {
 			return error(
-				implicitlyLoadedBefore === null
+				implicitlyLoadedBefore === null // implicitly绝对
 					? errorUnresolvedEntry(unresolvedId)
 					: errorUnresolvedImplicitDependant(unresolvedId, implicitlyLoadedBefore)
 			);
 		}
+
+		// external
 		if (
 			resolveIdResult === false ||
 			(typeof resolveIdResult === 'object' && resolveIdResult.external)
